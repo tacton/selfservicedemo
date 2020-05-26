@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<th:block th:fragment="tableHeader(tableDefinition)" >
+    <tr>
+        <th>Name</th>
+        <th>Last modified</th>
+        <th>Line items</th>
+
+        <th th:each="field : ${tableDefinition.fields}" th:utext="#{${'cart_list_headers.'+field}}"></th>
+
+        <th></th>
+    </tr>
+</th:block>
+
+
+<th:block th:fragment="tableBody(tableDefinition, cart)" >
+    <td th:text="${cart.customName}"></td>
+    <td th:text="${#dates.format(cart.lastModified, 'yyyy-MM-dd HH:mm:ss')}"></td>
+    <td th:text="${cart.cnt}"></td>
+
+    <td th:each="field : ${tableDefinition.fields}" th:utext="${tableDefinition.getValue(cart, '__${field}__') }"></td>
+
+    <td>
+        <a th:href="@{'/cart/' + ${cart.externalId} + '/edit'}" class="btn btn-sm btn-mycart-list" title="Edit"><i class="fas fa-pen"></i></a>
+        <a th:download="${cart.name} + '-BudgetEstimate.pdf'" th:href="@{'/cart/' + ${cart.externalId} + '/proposal'}" class="btn btn-sm btn-mycart-list" title="Download Estimate"><i class="fa fa-file-pdf"></i></a>
+        <a href="#" th:data-href="@{'/cart/' + ${cart.externalId} + '/requestfirmproposal'}" data-toggle="modal" data-target="#confirm-firmrequest" class="btn btn-sm btn-mycart-list" title="Request Firm Quote"><i class="fa fa-dollar-sign"></i></a>
+        <a href="#" th:data-href="@{'/removeCart/' + ${cart.cpqId}}" data-toggle="modal" data-target="#confirm-delete" class="btn btn-sm btn-danger" title="Delete Cart"><i class="fa fa-trash-alt"></i></a>
+    </td>
+
+</th:block>
+
+</body>
+</html>

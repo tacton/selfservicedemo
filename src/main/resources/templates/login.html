@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="common/header :: common-header(${'Sign in'})"></head>
+
+<body class="d-flex flex-column">
+
+
+<div th:replace="common/navbar :: common-navbar"></div>
+
+
+
+<div class="container flex-grow mb-5">
+    <div class="row mt-5 d-flex justify-content-center">
+
+        <div class="col-lg-5 col-md-12 px-5" >
+
+            <div class="row">
+                <div class="col text-center">
+                    <h1 class="h3 mt-3 mb-4">Sign in</h1>
+                </div>
+            </div>
+
+
+            <div th:if="${error}" class="row">
+                <div class="col text-center alert alert-danger">
+                    <span th:utext="${error}"></span>
+                </div>
+            </div>
+
+
+            <div class="row mt-1">
+                <div class="col">
+
+                    <form th:action="@{/login}" method="post">
+
+                        <div class="form-row mt-1">
+                            <div class="form-group col">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" id="username" class="form-control" name="username" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row mt-1">
+                            <div class="form-group col">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" id="password" name="password" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <a href="#">Forgot password?</a>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col text-center">
+                                <button type="submit" class="btn registration-btn text-center">Sign in</button>
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-5 col-md-12 ml-5 px-4">
+
+            <div class="row">
+                <div class="col text-center">
+                    <h1 class="h3 mt-3 mb-4">Not yet a self-service shop user?</h1>
+                </div>
+            </div>
+
+            <div class="row mt-1">
+                <div class="col">
+                    <p><i class="fas fa-check registration-check-icon mr-2"></i> Select and configure products</p>
+                    <p><i class="fas fa-check registration-check-icon mr-2"></i> Download documentation on configured products</p>
+                    <p><i class="fas fa-check registration-check-icon mr-2"></i> Download CAD files</p>
+                    <p><i class="fas fa-check registration-check-icon mr-2"></i> Add products to one or multiple carts</p>
+                    <p><i class="fas fa-check registration-check-icon mr-2"></i> Generate budget with your customer specific prices</p>
+                    <p><i class="fas fa-check registration-check-icon mr-2"></i> Track order status*</p>
+                    <p><i class="fas fa-check registration-check-icon mr-2"></i> Track shipping status*</p>
+                    <p><i class="fas fa-check registration-check-icon mr-2"></i> Collaborate on projects with your colleagues*</p>
+                    <p class="text-xs text-muted">*Upcoming features</p>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col text-center">
+                    <a class="btn registration-btn text-center" th:href="@{/register}" role="button">Register now</a>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+
+        </div>
+</div>
+
+
+
+
+<div th:replace="common/footer :: footer"></div>
+
+<div th:replace="common/footer :: scripts"></div>
+
+<div th:replace="common/footer :: shoppingCartDropdownWidget"></div>
+
+
+<script th:inline="javascript">
+    /* <![CDATA[ */
+    $(document).ready(function () {
+
+
+        if($('#username').val()!=""){
+            $('#username').parents('.form-group').addClass('focused');
+        }
+        if($('#password').val()!=""){
+            $('#password').parents('.form-group').addClass('focused');
+        }
+
+        $('input').focus(function(){
+            $(this).parents('.form-group').addClass('focused');
+        });
+
+
+
+        $('input').blur(function(){
+            var inputValue = $(this).val();
+
+                var inputValue = $(this).val();
+                if ( inputValue == "") {
+                    $(this).removeClass('filled');
+                    $(this).parents('.form-group').removeClass('focused');
+                } else {
+                    $(this).addClass('filled');
+                }
+        })
+
+
+    });
+    /* ]]> */
+</script>
+
+
+</body>
+</html>

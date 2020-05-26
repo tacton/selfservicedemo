@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="common/header :: common-header(${'Shopping carts'})"></head>
+
+<body class="d-flex flex-column">
+
+    <div th:replace="common/navbar :: common-navbar"></div>
+
+    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    Delete Cart
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this cart?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-danger btn-ok">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirm-firmrequest" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    Request Firm Quote
+                </div>
+                <div class="modal-body">
+                    Do you want to request a firm quote for this shopping cart? After request has been submitted, your cart will no longer be available for changes. Next, one of our sales representatives will prepare and share the firm quote with you.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary btn-ok">Request</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container flex-grow mb-5">
+
+        <div class="row mt-5 d-flex">
+
+            <div class="col">
+
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" th:href="@{'/myCartList/'}">My Carts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{'/myFirmQuoteRequests/'}">My Firm Quote Requests</a>
+                    </li>
+                </ul>
+
+
+                <div class="tab-pane-mycart-list">
+
+                    <div class="table-responsive">
+                        <table class="table" id="dataTableCarts" width="100%" cellspacing="0">
+                            <thead>
+
+                                <div th:replace="tables/myCartListFragments.html :: tableHeader(tableDefinition=${tableDefinition})" ></div>
+
+                            </thead>
+                            <tbody>
+                                <tr th:each="cart : ${carts}">
+
+                                    <div th:replace="tables/myCartListFragments.html :: tableBody(tableDefinition=${tableDefinition}, cart=${cart})" ></div>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+        </div>
+
+    </div>
+
+
+<div th:replace="common/footer :: footer"></div>
+
+<div th:replace="common/footer :: scripts"></div>
+
+<div th:replace="common/footer :: shoppingCartDropdownWidget"></div>
+
+
+<script th:src="@{/js/jquery.dataTables.js}"></script>
+<script th:src="@{/js/dataTables.bootstrap4.js}"></script>
+
+<script>
+    /*$('#firmquoterequeststable').bootstrapTable({
+        formatNoMatches: function () {
+            return 'No firm requests exist';
+        }
+    });
+    $('#cartstable').bootstrapTable({
+        formatNoMatches: function () {
+            return 'No carts exist';
+        }
+    });*/
+
+    $('#confirm-delete').on('show.bs.modal', function(e) {
+        $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+    });
+
+    $('#confirm-firmrequest').on('show.bs.modal', function(e) {
+        $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+    });
+</script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    var message = /*[[${message}]]*/ 'default';
+    if (message) {
+        console.log("message was not empty, show dialog");
+        var header = /*[[${header}]]*/ 'Done';
+        displayMessage(header, message);
+    }
+    console.log(message);
+
+    /*]]>*/
+</script>
+
+<script th:inline="javascript" th:with="colsNo=${tableDefinition.columns+3}">
+        /* <![CDATA[ */
+
+        $(document).ready(function() {
+
+
+            var table = $('#dataTableCarts').DataTable( {
+                "info": false,
+                "searching": false,
+                "paging": false,
+                "order": [ [ 1, "desc" ] ],
+                "columnDefs": [
+                    {
+                        "targets": [ /*[[${colsNo}]]*/ ],
+                        "visible": true,
+                        "searchable": false,
+                        "orderable": false,
+                        "width": "16%"
+                    }
+                ]
+            } );
+
+
+        });
+
+        /* ]]> */
+</script>
+
+</body>
+</html>

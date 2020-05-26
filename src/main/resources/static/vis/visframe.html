@@ -1,0 +1,34 @@
+<html>
+
+<head>
+	<script>
+		function localGetParameterByName (name, url) {
+			if (!url) url = window.location.href;
+			name = name.replace(/[\[\]]/g, "\\$&");
+			var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+				results = regex.exec(url);
+			if (!results) return null;
+			if (!results[2]) return '';
+			return decodeURIComponent(results[2].replace(/\+/g, " "));
+		}
+		function localDynamicallyLoadScript (url, callback) {
+			var script = document.createElement("script");
+			script.src = url;
+			script.onreadystatechange = script.onload = callback;
+			document.head.appendChild(script);
+		}
+		localDynamicallyLoadScript(localGetParameterByName("visframeScript"), function() {
+				loadVisualizer({
+					"viscontrollerAddress": localGetParameterByName("viscontrollerAddress"),
+					"tvkbPath": localGetParameterByName("tvkbPath"),
+					"assetsPath": localGetParameterByName("assetsPath")
+				})
+			}
+		);
+	</script>
+</head>
+
+<body>
+</body>
+
+</html>

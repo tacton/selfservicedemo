@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>LeadGen  - Configurator></title>
+
+    <link href="./css/animate.css" rel="stylesheet" media="screen"/>
+    <link href="./css/bootstrap-slider.css" rel="stylesheet" media="screen"/>
+    <link href="./css/tactonleadgen.css" rel="stylesheet" media="screen"/>
+    <link href="./css/styles.css" rel="stylesheet" media="screen"/>
+    <link href="./images/favicon.png" rel="icon" >
+
+
+</head>
+
+
+<body id="tc" class="page-template page-template-configurator page-template-configurator-php page page-id-55 configurator" style="overflow:hidden;">
+
+<div id="errorMessage" class="hidden"></div>
+
+<main id="main" class="main config">
+    <div class="flexrow">
+        <div id="nav" class="col-nav">
+            <div class="logo">
+                <a href="./">
+                    <img src="./images/header-logo.png" alt="Logo" class="logo-img">
+                </a>
+            </div>
+
+            <div id="menu">
+                <nav class="nav">
+                    <ul class="steps"></ul>
+                </nav>
+            </div>
+
+            <div class="tacton-footer">
+                <div class="image">
+                    <img src="./img/tacton-logo-gray.png" alt="Tacton logo">
+                </div>
+                <div class="info">
+                    <span class="t-info"><strong>Powered by Tacton</strong></span><br>
+                    <span class="t-contact"><a href="https://www.tacton.com/contact" target="_blank">Contact us</a></span>
+                </div>
+            </div>
+        </div>
+
+        <div id="confcontainer" class="col-conf">
+            <strong class="product-name">TECHNICAL REQUIREMENTS</strong>
+            <div id="configurator"></div>
+        </div>
+
+        <div class="col-summary">
+            <div id="overview">
+
+                <div class="bom">
+                    <div class="inner">
+                        <div class="image-and-text">
+                            <img src="./img/bomlist.png" alt="bomlist" class="bomlist-icon">
+                            <span class="show-bom"><a>Bill of<br>Material</a></span>
+                        </div>
+
+                    </div>
+                    <div class="arrow">
+                        <span class="icon icon-chevron-down"></span>
+                    </div>
+                </div>
+                <div class="summary">
+                    <div class="inner">
+                        <div class="image-and-text">
+                            <img src=./img/summary-icon.png" alt="bomlist" class="bomlist-icon hidden">
+                            <div class="price">
+                                <div class="total-price"></div>
+                                <a><span class="show-summary">Full summary</span></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="arrow">
+                        <span class="icon icon-chevron-down"></span>
+                    </div>
+                </div>
+                <div class="request">
+                    <button class="request-btn btn btn-default" type="button"  data-target=".modal.requestquote">Request Quote</button><!-- data-toggle="modal" -->
+                </div>
+            </div>
+
+            <div id="visualization">
+                <div class="content">
+
+                </div>
+            </div>
+
+            <div id="bom">
+                <div id="bomlist" class="content hidden">
+                    <div class="bom-status"></div>
+                    <h3>Bill of Material</h3>
+                    <div class="list"></div>
+                    <div class="bom-updates"></div>
+                </div>
+            </div>
+
+            <div id="summary">
+                <div class="content hidden">
+                    <h3>Full summary</h3>
+                    <div class="list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Conflict modal -->
+<div class="modal conflict animated">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <img class="achtung" src="./img/icon-attention.png" alt="">
+                <h4>Conflict</h4>
+            </div>
+            <div class="modal-body">
+                <div id="conflict">
+                    <p class="message">To resolve your selection, the following parameters must be changed</p>
+                </div>
+
+                <div id="message"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="flexbuttons">
+                    <div class="flexbutton accept">
+                        <button type="button" class="btn btn-primary conflict-accept">Accept new</button>
+                    </div>
+                    <div class="flexbutton reject">
+                        <button type="button" class="btn btn-secondary conflict-reject">Keep current</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal - Thank you -->
+<div class="modal thankyou animated">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Thank you!</h4>
+            </div>
+
+            <div class="modal-body">
+                <p class="message">Thanks for your quote request. A sales representative will contact you shortly.</p>
+
+                <div class="list">
+                </div>
+
+                <div class="price">
+                    <span class="price-label">Total price</span>
+                    <div class="total-price"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="flexbuttons">
+                    <div class="flexbutton open-start">
+                        <!-- <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button> -->
+                        <button type="button" class="btn btn-primary start-new-configuration">Start new Configuration</button>
+                    </div>
+                    <div class="flexbutton continue">
+                        <button type="button" class="btn btn-secondary close-thankyou-modal" data-custom-dismiss="modal">Continue Configuation</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal - Request -->
+<div class="modal requestquote animated"> <!-- fade-scale -->
+    <div class="modal-dialog" role="document">
+        <form id="leadForm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Request Quote</h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <ul class="request-list">
+                        <li>
+                            <div class="compact-input">
+                                <label>Company:</label>
+                                <input type="text" name="company">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="compact-input">
+                                <label>First name:</label>
+                                <input type="text" name="firstName">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="compact-input">
+                                <label>Last name:</label>
+                                <input type="text" name="lastName">
+                            </div>
+                        </li>
+
+                        <li>
+                            <div class="compact-input">
+                                <label>Email</label>
+                                <input type="text" name="contactEmail" tabindex="0">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="compact-input">
+                                <label>Tel</label>
+                                <input type="text" name="contactPhone" tabindex="0">
+                            </div>
+                        </li>
+                    </ul>
+                    <input type="hidden" id="productOfInterest" name="productOfInterest" value="">
+                </div>
+
+                <div class="modal-footer">
+                    <div class="flexbuttons">
+                        <div class="flexbutton send">
+                            <button type="button" class="btn btn-primary" tabindex="0">Send request</button>
+                        </div>
+                        <div class="flexbutton cancel">
+                            <button type="button" class="btn btn-secondary" data-custom-dismiss="modal">Cancel and close</button> <!-- data-dismiss="modal" -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal - Contact -->
+<div class="modal contact animated zoomIn">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Contact Tacton</h4>
+            </div>
+            <div class="modal-body">
+                <iframe src="https://go.pardot.com/l/32632/2014-02-05/39g7"></iframe>
+            </div>
+            <div class="modal-footer">
+                <div class="flexbuttons">
+                    <div class="flexbutton">
+                        <button type="button" class="btn btn-secondary" data-custom-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="overlay hidden">
+    <div class="spinner-container">
+        <img src="./img/spinner-2.gif" alt="" class="spinner">
+    </div>
+</div>
+
+
+<script src="./leadgen.js"></script>
+<script src="./admin-assets/jquery/jquery.js"></script>
+<script src="./bootstrap.js/bootstrap.js"></script>
+<script src="./js/selectric.js"></script>
+<script src="./js/bootstrapslider.js"></script>
+<script src="./js/tactonleadgen.js"></script>
+
+
+</body>
+</html>

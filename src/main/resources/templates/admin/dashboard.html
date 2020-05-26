@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="common-header">
+    <meta charset="UTF-8">
+    <title th:text="${@environment.getProperty('demo_site_name')} + ' - Site administration'"></title>
+
+    <!-- Custom fonts for this template-->
+    <link th:href="@{/admin-assets/fontawesome-free/css/all.css}" rel="stylesheet" type="text/css">
+
+    <!-- Custom styles for this template-->
+    <link th:href="@{/admin-assets/css/sb-admin-2.css}" rel="stylesheet">
+
+    <link th:href="@{/admin-assets/datatables/dataTables.bootstrap4.css}" rel="stylesheet">
+    <link th:href="@{/images/favicon.png}" rel="icon" >
+</head>
+<body>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
+
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/}">
+            <img th:src="@{/images/header-logo.png}" class="d-inline-block align-top admin-logo"/>
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider mb-3">
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item active">
+            <a class="nav-link" th:href="@{/admin/}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Dashboard</span></a>
+        </li>
+
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" th:href="@{/admin/users/}">
+                <i class="fas fa-fw fa-users"></i>
+                <span>Users</span></a>
+        </li>
+
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#">
+                <i class="fas fa-fw fa-shopping-cart"></i>
+                <span>Shopping carts</span></a>
+        </li>
+
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#">
+                <i class="fas fa-fw fa-dollar-sign"></i>
+                <span>Firm proposal requests</span></a>
+        </li>
+
+
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                <!-- Sidebar Toggle (Topbar) -->
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <i class="fa fa-bars"></i>
+                </button>
+
+
+
+                <!-- Topbar Navbar -->
+                <ul class="navbar-nav ml-auto">
+
+                    <!-- Nav Item - Alerts -->
+                    <li class="nav-item dropdown no-arrow mx-1">
+                        <!--<a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-bell fa-fw"></i>
+                            &lt;!&ndash; Counter - Alerts &ndash;&gt;
+                            <span class="badge badge-danger badge-counter">3</span>
+                        </a>-->
+                        <!-- Dropdown - Alerts -->
+                        <!--<div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated&#45;&#45;grow-in" aria-labelledby="alertsDropdown">
+                            <h6 class="dropdown-header">
+                                Alerts
+                            </h6>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <div class="mr-3">
+                                    <div class="icon-circle bg-primary">
+                                        <i class="fas fa-file-alt text-white"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="small text-gray-500">December 12, 2019</div>
+                                    <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                                </div>
+                            </a>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <div class="mr-3">
+                                    <div class="icon-circle bg-success">
+                                        <i class="fas fa-donate text-white"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="small text-gray-500">December 7, 2019</div>
+                                    $290.29 has been deposited into your account!
+                                </div>
+                            </a>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <div class="mr-3">
+                                    <div class="icon-circle bg-warning">
+                                        <i class="fas fa-exclamation-triangle text-white"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="small text-gray-500">December 2, 2019</div>
+                                    Spending Alert: We've noticed unusually high spending for your account.
+                                </div>
+                            </a>
+                        </div>-->
+                    </li>
+
+                    <div class="topbar-divider d-none d-sm-block"></div>
+
+                    <!-- Nav Item - User Information -->
+                    <li class="nav-item dropdown no-arrow">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="text-lg mr-2 d-none d-lg-inline text-gray-800" th:text="${#authentication.getPrincipal().getName() + ' ' + #authentication.getPrincipal().getSurname()}"></span>
+                            <i class="fas fa-user"></i>
+                        </a>
+                        <!-- Dropdown - User Information -->
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                            <!--<a class="dropdown-item" href="#">
+                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Profile
+                            </a>-->
+                            <!--<div class="dropdown-divider"></div>-->
+                            <a class="dropdown-item" href="/logout">
+                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </li>
+
+                </ul>
+
+            </nav>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <!--<div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                </div>-->
+
+                <!-- Content Row -->
+                <div class="row">
+
+
+                    <div class="col mb-4">
+                        <div class="card shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Firm proposal requests</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${proposalRequestCount}">0</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-dollar-sign fa-2x text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col mb-4">
+                        <div class="card shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Shopping carts</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${cartsCount}"></div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-shopping-cart fa-2x text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col mb-4">
+                        <div class="card shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Registered users</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${userList.size()}"></div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-users fa-2x text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Row -->
+
+                <div class="row">
+
+                    <div class="col">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">Newest users</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover" id="dataTableUsersDashboard" width="100%" cellspacing="0">
+                                        <thead>
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Username</th>
+                                            <th>Email</th>
+                                            <th>Name</th>
+                                            <th>Start date</th>
+                                            <th>Enabled</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="user : ${userList}">
+                                            <td th:text="${user.id}"></td>
+                                            <td th:text="${user.username}"></td>
+                                            <td th:text="${user.email}"></td>
+                                            <td th:text="${user.name} + ' ' + ${user.surname}"></td>
+                                            <td th:text="${user.creationDate}"></td>
+                                            <td>
+                                                <span th:if="${user.isEnabled()}" th:text="'Yes'" class="badge badge-success"></span>
+                                                <span th:if="${!user.isEnabled()}" th:text="'No'" class="badge badge-danger"></span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+
+                    <div class="col">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">Newest shopping carts</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover" id="dataTableCartsDashboard" width="100%" cellspacing="0">
+                                        <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Id</th>
+                                            <th>Last modified</th>
+                                            <th>Line items</th>
+                                            <th>Total price (EUR)</th>
+                                            <th>State</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="cart : ${cartsList}">
+                                            <td th:text="${cart.customName}"></td>
+                                            <td th:text="${cart.externalId}"></td>
+                                            <td th:text="${#dates.format(cart.lastModified, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                            <td th:text="${cart.getCnt()}"></td>
+                                            <td th:text="${cart.totalNetPrice}"></td>
+                                            <td>
+                                                <span th:if="${cart.state=='Created'}" th:text="${cart.state}" class="badge badge-success"></span>
+                                                <span th:if="${cart.state=='Firm Proposal Requested'}" th:text="${cart.state}" class="badge badge-info"></span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+
+                    <div class="col">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">Newest firm proposal requests</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover" id="dataTableProposalsDashboard" width="100%" cellspacing="0">
+                                        <thead>
+                                        <tr>
+                                            <th>Shopping Cart Name</th>
+                                            <th>Firm Quote Request ID</th>
+                                            <th>Last Modified</th>
+                                            <th>Line Items</th>
+                                            <th>Total Net Price (EUR)</th>
+                                            <th>Status</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="proposal : ${proposalRequestList}">
+                                            <td th:text="${proposal.cartName}"></td>
+                                            <td th:text="${proposal.name}"></td>
+                                            <td th:text="${#dates.format(proposal.modifiedTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                            <td th:text="${proposal.itemCount}"></td>
+                                            <td th:text="${proposal.totalNetPrice}"></td>
+                                            <td>
+                                                <span th:if="${proposal.state=='10'}" th:text="${proposal.stateTitle}" class="badge badge-success"></span>
+                                                <span th:if="${proposal.state=='0'}" th:text="${proposal.stateTitle}" class="badge badge-warning"></span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+            <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                    <span th:text="'Copyright &copy; ' + ${@environment.getProperty('demo_site_name')}"></span>
+                </div>
+            </div>
+        </footer>
+        <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+</div>
+<!-- End of Page Wrapper -->
+
+
+
+<!-- Bootstrap core JavaScript-->
+<script th:src="@{/admin-assets/jquery/jquery.js}"></script>
+<script th:src="@{/admin-assets/bootstrap/js/bootstrap.bundle.js}"></script>
+
+<!-- Core plugin JavaScript-->
+<script th:src="@{/admin-assets/jquery-easing/jquery.easing.js}"></script>
+
+<!-- Custom scripts for all pages-->
+<script th:src="@{/admin-assets/js/sb-admin-2.js}"></script>
+
+    <script th:src="@{/admin-assets/datatables/jquery.dataTables.js}"></script>
+    <script th:src="@{/admin-assets/datatables/dataTables.bootstrap4.js}"></script>
+
+
+    <script th:inline="javascript" th:if="${#authorization.expression('isAuthenticated()')}">
+        /* <![CDATA[ */
+
+        $(document).ready(function() {
+            var tableUsers = $('#dataTableUsersDashboard').DataTable( {
+                "columnDefs": [
+                    {
+                        "targets": [ 0 ],
+                        "visible": true,
+                        "searchable": false
+                    }
+                ],
+                "lengthMenu": [ [5, 10, 20], [5, 10, 20] ],
+                "info": false,
+                "searching": false,
+                "paging": true,
+                "order": [ [ 0, "desc" ] ]
+            } );
+
+            var tableCarts = $('#dataTableCartsDashboard').DataTable( {
+                "lengthMenu": [ [5, 10, 20], [5, 10, 20] ],
+                "info": false,
+                "searching": false,
+                "paging": true,
+                "order": [ [ 2, "desc" ] ]
+            } );
+
+            var tableProposals = $('#dataTableProposalsDashboard').DataTable( {
+                "lengthMenu": [ [5, 10, 20], [5, 10, 20] ],
+                "info": false,
+                "searching": false,
+                "paging": true,
+                "order": [ [ 2, "desc" ] ]
+            } );
+
+            $('#dataTableUsersDashboard tbody').on('click', 'tr', function () {
+                var data = tableUsers.row( this ).data();
+                //console.log(window.location);
+                //console.log(window.location.origin);
+                window.location.replace(window.location.origin + "/admin/user/"+data[0]);
+            } );
+
+        });
+
+        /* ]]> */
+    </script>
+
+</body>
+
+</html>

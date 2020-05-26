@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+
+
+
+
+
+<nav th:fragment="footer" class="navbar py-4 navbar-footer mt-4">
+
+    <div class="container">
+        <a class="navbar-brand pr-2" href="https://www.tacton.com">
+            <img th:src="@{/img/tacton-logo.png}" class="leadgen-footer-logo">
+        </a>
+
+
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <p>Powered by Tacton</p>
+                    <a class="nav-link" href="https://www.tacton.com/contact" target="_blank">Contact us</a>
+                </li>
+            </ul>
+
+
+    </div>
+
+</nav>
+
+
+
+
+<div th:fragment="scripts">
+    <script th:src="@{/webjars/jquery/3.4.1/jquery.js}"></script>
+    <script th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.js}"></script>
+    <script th:src="@{/js/bootstrap-table.min.js}"></script>
+    <script th:src="@{/js/selectric.js}"></script>
+</div>
+
+
+
+
+<div th:fragment="shoppingCartDropdownWidget">
+
+    <div class="modal fade" id="confirm-message" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" id="confirm-message-header">
+                    Done
+                </div>
+                <div class="modal-body" id="confirm-message-body">
+                    Confirmed
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function displayMessage(header, message) {
+            $('#confirm-message-header').text(header);
+            $('#confirm-message-body').html(message);
+            $('#confirm-message').modal('show');
+        }
+    </script>
+
+    <script th:inline="javascript" th:if="${#authorization.expression('isAuthenticated()')}">
+        /* <![CDATA[ */
+        $(document).ready(function () {
+
+            $('#cartSelect').selectric();
+
+            $('#cartSelect').val(/*[[ ${#authentication.getPrincipal().getActiveCartId()} ]]*/).selectric('refresh');
+
+            $('#cartSelect').on('change', function() {
+                if($(this).val()=="newCart"){
+                    console.log("new cart");
+                    $.ajax({
+                        type: "GET",
+                        url: "/newCart/",
+                        success: function (data, status) {
+                            if(data.status=="ok") {
+                            window.location.reload();
+                            } else {
+                                displayMessage(data.header, data.message);
+                            }
+                        },
+                        error: function (data, status) {
+                            displayMessage("Error", "Error during add new cart.");
+                        }
+                    });
+                }else {
+                    $.ajax({
+                        type: "GET",
+                        url: "/changeActiveCart/" + $(this).val(),
+                        success: function (data, status) {
+                            window.location.reload();
+                        }
+                    });
+                }
+            });
+
+        });
+        /* ]]> */
+    </script>
+</div>
+
+
+
+
+</body>
+</html>

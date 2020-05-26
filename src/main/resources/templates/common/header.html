@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="common-header(title)">
+
+    <meta charset="UTF-8">
+    <title th:text="${@environment.getProperty('demo_site_name')} + ' - ' + ${title}"></title>
+
+    <link th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}" rel="stylesheet" media="screen"/>
+    <link th:href="@{/css/bootstrap-table.min.css}" rel="stylesheet" media="screen"/>
+    <link th:href="@{/css/animate.css}" rel="stylesheet" media="screen"/>
+    <link th:href="@{/css/bootstrap-slider.css}" rel="stylesheet" media="screen"/>
+
+   <!-- <link th:href="@{/css/styles.css}" rel="stylesheet" media="screen"/>-->
+    <link th:href="@{/css/bcommerce.css}" rel="stylesheet" media="screen"/>
+    <link th:href="@{/css/fontawesome.css}" rel="stylesheet" media="screen"/>
+
+    <link th:href="@{/css/dataTables.bootstrap4.css}" rel="stylesheet">
+
+    <link th:href="@{/images/favicon.png}" rel="icon" >
+</head>
+<body>
+
+</body>
+</html>

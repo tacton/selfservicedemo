@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<th:block th:fragment="tableHeader(tableDefinition)" >
+    <div class="row cart-sticky-header-headings">
+        <div class="col-5">
+            <span class="cart-sticky-header-to-bottom">Product</span>
+        </div>
+        <div class="col col-quantity">
+            <span class="cart-sticky-header-to-bottom">Quantity</span>
+        </div>
+        <div class="col" th:each="field : ${tableDefinition.fields}">
+            <span class="cart-sticky-header-to-bottom" th:utext="#{${'cart_columns.'+field}}"></span>
+        </div>
+        <div class="col-small-3">
+        </div>
+    </div>
+</th:block>
+
+
+<th:block th:fragment="tableBody(tableDefinition, item)" >
+    <div class="col-2 my-auto">
+        <img th:if="${item.image!=null}" th:src="@{'data:image/png;base64,'+${item.image}}" ></img>
+    </div>
+    <div class="col-3 my-auto">
+        <h3 th:text="${item.name}"></h3>
+        <div th:text="${item.productCatalogId}"></div>
+        <div th:if="${item.isConfigurable}" class="d-inline-block">
+            <a th:if="${item.isConfigurable}" th:href="@{'/reconfigure/' + ${item.id}}" class="btn cart-product-reconfigure-btn mt-1 mb-1">Reconfigure</a>
+            <a th:if="${item.isConfigurable}" href="#" class="btn cart-product-reconfigure-btn mt-1 mb-1 disabled">Details</a>
+        </div>
+    </div>
+    <div class="col col-quantity my-auto">
+        <div class="input-group">
+            <span class="input-group-btn">
+                <a th:if="${(item.qty>1)}" class="btn btn-number shop-minus-btn" th:href="@{'/removeOne/' + ${item.id}}" role="button"><i class="fas fa-minus pt-1"></i></a>
+                <a th:unless="${(item.qty>1)}" class="btn btn-number shop-minus-btn disabled" th:href="@{'/removeOne/' + ${item.id}}" role="button"><i class="fas fa-minus pt-1"></i></a>
+            </span>
+            <input type="text" class="form-control input-number" th:value="${item.qty}" min="1" max="9">
+            <span class="input-group-btn">
+                <a th:if="${(item.qty<10)}" th:href="@{'/addOne/' + ${item.id}}" class="btn btn-number shop-plus-btn"><i class="fas fa-plus pt-1"></i></a>
+                <a th:unless="${(item.qty<10)}" th:href="@{'/addOne/' + ${item.id}}" class="btn btn-number shop-plus-btn disabled"><i class="fas fa-plus pt-1"></i></a>
+            </span>
+        </div>
+    </div>
+
+    <div class="col my-auto" th:each="field : ${tableDefinition.fields}">
+        <span th:utext="${tableDefinition.getValue(item, '__${field}__') }"></span>
+    </div>
+
+    <div class="col-small-3 small-gutters my-auto">
+        <a th:href="@{'/remove/' + ${item.id}}"><i class="fas fa-trash-alt"></i></a>
+    </div>
+
+</th:block>
+
+
+<th:block th:fragment="tableTotal(tableDefinition, shoppingCart)" >
+    <div class="col-5 my-auto">
+        <p><span class="text-uppercase">Last modified:</span> <span th:text="${#dates.format(shoppingCart.lastModified, 'yyyy-MM-dd HH:mm:ss')}" class="text-uppercase text-600"></span></p>
+    </div>
+
+    <div class="col col-quantity text-right">
+        <p class="cart-sticky-footer-total">Total:</p>
+    </div>
+
+    <div class="col" th:each="column : ${tableDefinition.totals}">
+        <p class="cart-sticky-footer-total text-600" th:if="${column != null}" th:text="${tableDefinition.getValue(shoppingCart, '__${column}__')}"></p>
+    </div>
+
+    <div class="col-small-3">
+    </div>
+
+</th:block>
+
+</body>
+</html>

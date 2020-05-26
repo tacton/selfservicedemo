@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="common/header :: common-header(${'Registration'})"></head>
+
+<body class="d-flex flex-column">
+
+
+<div th:replace="common/navbar :: common-navbar"></div>
+
+
+
+<div class="container flex-grow mb-5">
+    <div class="row mt-5 d-flex justify-content-center">
+
+        <div class="col-6">
+            <div class="row">
+                <div class="col text-center">
+                    <h1 class="h3 mt-3 mb-4">Register new account</h1>
+                </div>
+            </div>
+
+
+            <div class="row mt-1">
+                <div class="col">
+                    <form th:object="${user}" th:action="@{/register}" method="post">
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="text" id="email" name="email" th:field="*{email}" th:class="${#fields.hasErrors('email')} ? 'form-control is-invalid' : 'form-control'">
+                                <div th:if="${#fields.hasErrors('email')}" class="invalid-feedback">
+                                    <p th:each="err : ${#fields.errors('email')}" th:text="${err}" class="py-0 my-0">Validation error</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" id="username" name="username" th:field="*{username}" th:class="${#fields.hasErrors('username')} ? 'form-control is-invalid' : 'form-control'" required>
+                                <div th:if="${#fields.hasErrors('username')}" class="invalid-feedback">
+                                    <p th:each="err : ${#fields.errors('username')}" th:text="${err}" class="py-0 my-0">Validation error</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" id="password" name="password" th:field="*{password}" th:class="${#fields.hasErrors('password')} ? 'form-control is-invalid' : 'form-control'" required>
+                                <div th:if="${#fields.hasErrors('password')}" class="invalid-feedback">
+                                    <p th:each="err : ${#fields.errors('password')}" th:text="${err}" class="py-0 my-0">Validation error</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <label for="firstName" class="form-label">First Name</label>
+                                <input type="text" id="firstName" name="firstName" th:field="*{name}" th:class="${#fields.hasErrors('name')} ? 'form-control is-invalid' : 'form-control'" required>
+                                <div th:if="${#fields.hasErrors('name')}" class="invalid-feedback">
+                                    <p th:each="err : ${#fields.errors('name')}" th:text="${err}" class="py-0 my-0">Validation error</p>
+                                </div>
+                            </div>
+                            <div class="form-group col">
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <input type="text" id="lastName" name="lastName" th:field="*{surname}" th:class="${#fields.hasErrors('surname')} ? 'form-control is-invalid' : 'form-control'" required>
+                                <div th:if="${#fields.hasErrors('surname')}" class="invalid-feedback">
+                                    <p th:each="err : ${#fields.errors('surname')}" th:text="${err}" class="py-0 my-0">Validation error</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col country">
+                                <label class="label-selectric-country" for="country">Country</label>
+
+                                <div class="select-wrapper selectric-big">
+                                    <select id="country" name="country" th:field="*{countryOfInstallation}" required>
+                                        <option value="" disabled selected></option>
+                                        <option th:each="country : ${countries}" th:value="${country.id}" th:text="${country.name}"></option>
+                                    </select>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col currency">
+                                <label class="label-selectric-currency" for="currency">Currency</label>
+                                <div class="select-wrapper selectric-big">
+                                    <select id="currency" name="currency" th:field="*{currency}" required>
+                                        <option value="" disabled selected></option>
+                                        <option th:each="currency : ${currencies}" th:value="${currency.id}" th:text="${currency.name}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row mt-4">
+                            <div class="col text-center">
+                                <button type="submit" class="btn registration-btn text-center">Register</button>
+                            </div>
+                        </div>
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div th:replace="common/footer :: footer"></div>
+
+<div th:replace="common/footer :: scripts"></div>
+
+<script th:inline="javascript">
+    /* <![CDATA[ */
+    $(document).ready(function () {
+
+        var currencyValue="";
+        var countryValue="";
+
+        $('#country').selectric();
+        $('#currency').selectric();
+
+
+        if(/*[[${user.currency}]]*/){
+            $('#currency').val(/*[[${user.currency}]]*/).selectric('refresh');
+        }
+        else{
+            $('#currency').val("").selectric('refresh');
+        }
+        if(/*[[${user.countryOfInstallation}]]*/){
+            $('#country').val(/*[[${user.countryOfInstallation}]]*/).selectric('refresh');
+        }
+        else{
+            $('#country').val("").selectric('refresh');
+        }
+
+
+
+        if($('#email').val()!=""){
+            $('#email').parents('.form-group').addClass('focused');
+        }
+        if($('#username').val()!=""){
+            $('#username').parents('.form-group').addClass('focused');
+        }
+        if($('#password').val()!=""){
+            $('#password').parents('.form-group').addClass('focused');
+        }
+        if($('#firstName').val()!=""){
+            $('#firstName').parents('.form-group').addClass('focused');
+        }
+        if($('#lastName').val()!=""){
+            $('#lastName').parents('.form-group').addClass('focused');
+        }
+        if($('#currency').val()!=null){
+            $('#currency').parents('.form-group').addClass('focused');
+        }
+        if($('#country').val()!=null){
+            $('#country').parents('.form-group').addClass('focused');
+        }
+
+
+        $('input').focus(function(){
+            $(this).parents('.form-group').addClass('focused');
+
+            var elClass = $(this).attr('class');
+            if(elClass=="selectric-input"){
+
+                var elClass2 = $(this).parents('.form-group').attr('class');
+                if (elClass2.indexOf("currency") >= 0){
+                    $('.label-selectric-country').css('z-index', "1");
+                }
+
+                if (elClass2.indexOf("country") >= 0){
+                    $('.label-selectric-currency').css('z-index', "1");
+                }
+            }
+
+        });
+
+
+
+        $('input').blur(function(){
+            var inputValue = $(this).val();
+            var inputValue2 = "";
+            var elClass = $(this).attr('class');
+
+            if(elClass=="selectric-input"){
+
+                var elClass2 = $(this).parents('.form-group').attr('class');
+                if (elClass2.indexOf("currency") >= 0){
+                    if ($('.selectric-items:hover').length == 0) {
+                        currencyValue = $('#currency option:selected').val();
+                        if(currencyValue==""){
+                            $(this).removeClass('filled');
+                            $(this).parents('.form-group').removeClass('focused');
+                        }
+                        $('.label-selectric-country').css('z-index', "99999");
+                    }
+                }
+
+                if (elClass2.indexOf("country") >= 0){
+                    if ($('.selectric-items:hover').length == 0) {
+                        countryValue = $('#country option:selected').val();
+                        if (countryValue == "") {
+                            $(this).removeClass('filled');
+                            $(this).parents('.form-group').removeClass('focused');
+                        }
+                        $('.label-selectric-currency').css('z-index', "99999");
+                    }
+                }
+
+            }
+            else{
+                var inputValue = $(this).val();
+                if ( inputValue == "") {
+                    $(this).removeClass('filled');
+                    $(this).parents('.form-group').removeClass('focused');
+                } else {
+                    $(this).addClass('filled');
+                }
+            }
+
+
+        })
+
+
+    });
+    /* ]]> */
+</script>
+
+
+</body>
+</html>

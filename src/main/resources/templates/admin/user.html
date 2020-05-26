@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="common-header">
+    <meta charset="UTF-8">
+    <title th:text="${@environment.getProperty('demo_site_name')} + ' - Site administration'"></title>
+
+    <!-- Custom fonts for this template-->
+    <link th:href="@{/admin-assets/fontawesome-free/css/all.css}" rel="stylesheet" type="text/css">
+
+    <!-- Custom styles for this template-->
+    <link th:href="@{/admin-assets/css/sb-admin-2.css}" rel="stylesheet">
+
+    <link th:href="@{/admin-assets/css/selectric.css}" rel="stylesheet">
+
+    <link th:href="@{/images/favicon.png}" rel="icon" >
+</head>
+<body>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
+
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/}">
+            <img th:src="@{/images/header-logo.png}" class="d-inline-block align-top admin-logo"/>
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider mb-3">
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/admin/}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Dashboard</span></a>
+        </li>
+
+
+        <li class="nav-item active">
+            <a class="nav-link collapsed" th:href="@{/admin/users/}">
+                <i class="fas fa-fw fa-users"></i>
+                <span>Users</span></a>
+        </li>
+
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#">
+                <i class="fas fa-fw fa-shopping-cart"></i>
+                <span>Shopping carts</span></a>
+        </li>
+
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#">
+                <i class="fas fa-fw fa-dollar-sign"></i>
+                <span>Firm proposal requests</span></a>
+        </li>
+
+
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                <!-- Sidebar Toggle (Topbar) -->
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <i class="fa fa-bars"></i>
+                </button>
+
+
+
+                <!-- Topbar Navbar -->
+                <ul class="navbar-nav ml-auto">
+
+                    <!-- Nav Item - Alerts -->
+                    <li class="nav-item dropdown no-arrow mx-1">
+                        <!--<a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-bell fa-fw"></i>
+                            &lt;!&ndash; Counter - Alerts &ndash;&gt;
+                            <span class="badge badge-danger badge-counter">3</span>
+                        </a>-->
+                        <!-- Dropdown - Alerts -->
+                        <!--<div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated&#45;&#45;grow-in" aria-labelledby="alertsDropdown">
+                            <h6 class="dropdown-header">
+                                Alerts
+                            </h6>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <div class="mr-3">
+                                    <div class="icon-circle bg-primary">
+                                        <i class="fas fa-file-alt text-white"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="small text-gray-500">December 12, 2019</div>
+                                    <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                                </div>
+                            </a>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <div class="mr-3">
+                                    <div class="icon-circle bg-success">
+                                        <i class="fas fa-donate text-white"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="small text-gray-500">December 7, 2019</div>
+                                    $290.29 has been deposited into your account!
+                                </div>
+                            </a>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <div class="mr-3">
+                                    <div class="icon-circle bg-warning">
+                                        <i class="fas fa-exclamation-triangle text-white"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="small text-gray-500">December 2, 2019</div>
+                                    Spending Alert: We've noticed unusually high spending for your account.
+                                </div>
+                            </a>
+                        </div>-->
+                    </li>
+
+                    <div class="topbar-divider d-none d-sm-block"></div>
+
+                    <!-- Nav Item - User Information -->
+                    <li class="nav-item dropdown no-arrow">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="text-lg mr-2 d-none d-lg-inline text-gray-800" th:text="${#authentication.getPrincipal().getName() + ' ' + #authentication.getPrincipal().getSurname()}"></span>
+                            <i class="fas fa-user"></i>
+                        </a>
+                        <!-- Dropdown - User Information -->
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                            <!--<a class="dropdown-item" href="#">
+                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Profile
+                            </a>-->
+                            <!--<div class="dropdown-divider"></div>-->
+                            <a class="dropdown-item" href="/logout">
+                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </li>
+
+                </ul>
+
+            </nav>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+              <!--  <h1 class="h3 mb-2 text-gray-800" th:text="'User'"></h1>-->
+
+                <div th:if="${message}" class="row">
+                    <div class="col mt-4 text-center alert alert-success">
+                        <span th:text="${message}"></span>
+                    </div>
+                </div>
+
+                <!-- DataTales Example -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">User</h6>
+                    </div>
+                    <div class="card-body d-flex justify-content-center">
+
+
+                        <div class="col">
+                            <form th:object="${user}" th:action="@{/admin/user/update}" method="post">
+                                <input type="hidden" id="id" th:field="*{id}">
+
+
+                                <div class="form-row">
+                                    <div class="form-group col">
+                                        <label for="newEmail">Email</label>
+                                        <input type="hidden" id="oldEmail" th:field="*{email}">
+                                        <input type="text" id="newEmail" name="newEmail" th:value="*{email}" th:class="${#fields.hasErrors('email')} ? 'form-control is-invalid' : 'form-control'" required>
+                                        <div th:if="${#fields.hasErrors('email')}" class="invalid-feedback">
+                                            <p th:each="err : ${#fields.errors('email')}" th:text="${err}" class="py-0 my-0">Validation error</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col">
+                                        <label for="lastName">Start date</label>
+                                        <div id="creationDate" name="creationDate" class="form-control" th:text="*{creationDate}"></div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col">
+                                        <label for="newUsername">Username</label>
+                                        <input type="hidden" id="oldUsername" th:field="*{username}">
+                                        <input type="text" id="newUsername" name="newUsername" th:value="*{username}" th:class="${#fields.hasErrors('username')} ? 'form-control is-invalid' : 'form-control'" th:readonly="${!isUsernameAndPasswordEditable}" th:required="${isUsernameAndPasswordEditable}">
+                                        <div th:if="${#fields.hasErrors('username')}" class="invalid-feedback">
+                                            <p th:each="err : ${#fields.errors('username')}" th:text="${err}" class="py-0 my-0">Validation error</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col">
+                                        <label for="newPassword">New password (leave empty if you don't want to change current password)</label>
+                                        <input type="hidden" id="oldPassword" th:field="*{password}">
+                                        <input type="password" id="newPassword" name="newPassword" th:class="${#fields.hasErrors('password')} ? 'form-control is-invalid' : 'form-control'" th:readonly="${!isUsernameAndPasswordEditable}">
+                                        <div th:if="${#fields.hasErrors('password')}" class="invalid-feedback">
+                                            <p th:each="err : ${#fields.errors('password')}" th:text="${err}" class="py-0 my-0">Validation error</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col">
+                                        <label for="firstName">First Name</label>
+                                        <input type="text" id="firstName" name="firstName" th:field="*{name}" th:class="${#fields.hasErrors('name')} ? 'form-control is-invalid' : 'form-control'" required>
+                                        <div th:if="${#fields.hasErrors('name')}" class="invalid-feedback">
+                                            <p th:each="err : ${#fields.errors('name')}" th:text="${err}" class="py-0 my-0">Validation error</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col">
+                                        <label for="lastName">Last Name</label>
+                                        <input type="text" id="lastName" name="lastName" th:field="*{surname}" th:class="${#fields.hasErrors('surname')} ? 'form-control is-invalid' : 'form-control'" required>
+                                        <div th:if="${#fields.hasErrors('surname')}" class="invalid-feedback">
+                                            <p th:each="err : ${#fields.errors('surname')}" th:text="${err}" class="py-0 my-0">Validation error</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col">
+                                        <label for="country">Country</label>
+                                        <span th:if="${user.getCountryOfInstallation()==null}">null</span>
+
+                                        <div class="select-wrapper">
+                                            <select id="country" name="country" th:field="*{countryOfInstallation}" required>
+                                                <option th:each="country : ${countries}" th:value="${country.id}" th:text="${country.name}"></option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col">
+                                        <label for="country">Currency</label>
+                                        <div class="select-wrapper">
+                                            <select id="currency" name="currency" th:field="*{currency}" required>
+                                                <option th:each="currency : ${currencies}" th:value="${currency.id}" th:text="${currency.name}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col">
+                                        <label for="country">Account</label>
+                                        <div class="select-wrapper">
+                                            <select id="account" name="account" th:field="*{account}" required>
+                                                <option th:each="account : ${accounts}" th:value="${account.accountId}" th:text="${account.name}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div th:class="${isUsernameAndPasswordEditable} ? 'form-group col' : 'form-group col no-events'">
+                                        <label for="enabled">Enabled</label>
+                                        <div>
+                                            <label class="switch">
+                                                <input type="checkbox" id="enabled" name="enabled" data-on="true" data-off="false" th:checked="*{enabled}" th:readonly="${!isUsernameAndPasswordEditable}">
+                                                <span class="state-green"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <div class="col text-center">
+                                        <button type="submit" class="btn btn-primary text-center">Update</button>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+            <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                    <span th:text="'Copyright &copy; ' + ${@environment.getProperty('demo_site_name')}"></span>
+                </div>
+            </div>
+        </footer>
+        <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+
+
+<!-- Bootstrap core JavaScript-->
+<script th:src="@{/admin-assets/jquery/jquery.js}"></script>
+<script th:src="@{/admin-assets/bootstrap/js/bootstrap.bundle.js}"></script>
+
+<!-- Core plugin JavaScript-->
+<script th:src="@{/admin-assets/jquery-easing/jquery.easing.js}"></script>
+
+<!-- Custom scripts for all pages-->
+<script th:src="@{/admin-assets/js/sb-admin-2.js}"></script>
+
+<script th:src="@{/admin-assets/js/selectricc.js}"></script>
+
+<script th:inline="javascript">
+    /* <![CDATA[ */
+    $(document).ready(function () {
+
+        $('#country').selectric();
+        $('#currency').selectric();
+        $('#account').selectric();
+
+    });
+    /* ]]> */
+</script>
+
+</body>
+
+</html>

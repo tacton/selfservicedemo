@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="common/header :: common-header(${'Shopping cart'})"></head>
+
+<body class="d-flex flex-column">
+
+<div th:replace="common/navbar :: common-navbar"></div>
+
+
+
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                Delete Cart
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this cart?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-danger btn-ok">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirm-firmrequest" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                Request Firm Quote
+            </div>
+            <div class="modal-body">
+                <p>Do you want to request a firm quote for this shopping cart?</p>
+                <p class="modal-additional-info">After request has been submitted, your cart will no longer be available for changes.
+                    Next, one of our sales representatives will prepare and share the firm quote with you.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary btn-ok">Request</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="fluid cart-sticky-header">
+    <div class="container">
+        <div class="row mt-4 mb-3">
+            <div class="col">
+                <p class="shopping-cart-name">
+                    <span th:text="${shoppingCart.customName}"></span>
+                    <a id="edit-shopping-cart-name" class="btn shopping-cart-name-form-btn pl-3 pr-3 cursor-pointer" role="button">Edit</a>
+                </p>
+                <p class="shopping-cart-name-form">
+                    <input type="text" id="shopping-cart-name-input" name="shopping-cart-name-input" th:value="${shoppingCart.customName}" class="form-control shopping-cart-name-input d-inline-block" required>
+                    <a id="shopping-cart-name-form-btn-cancel" class="btn shopping-cart-name-form-btn-cancel pl-3 pr-3 cursor-pointer" role="button">Cancel</a>
+                    <a id="shopping-cart-name-form-btn-save" class="btn shopping-cart-name-form-btn pl-3 pr-3 cursor-pointer" role="button">Save</a>
+                </p>
+
+                <p><span class="text-uppercase">Customer:</span> <span th:text="${account.name}" class="text-uppercase text-600"></span></p>
+                <p><span class="text-uppercase">Currency:</span> <span th:text="${currency.name}" class="text-uppercase text-600"></span></p>
+                <p><span class="text-uppercase">Country:</span> <span th:text="${country.name}" class="text-uppercase text-600"></span></p>
+            </div>
+            <div class="col text-right my-auto">
+                <a th:if="${shoppingCartItemList.size()>=1}" class="btn shopping-cart-action-btn" th:download="${shoppingCart.customName} + '-BudgetEstimate.pdf'" th:href="@{'/cart/' + ${shoppingCart.externalId} + '/proposal'}" role="button">Download estimate</a>
+                <a th:if="${shoppingCartItemList.size()<1}" class="btn shopping-cart-action-btn disabled" href="#" role="button">Download estimate</a>
+
+                <a th:if="${shoppingCartItemList.size()>=1}" class="btn shopping-cart-action-btn" href="#" th:data-href="@{'/cart/' + ${shoppingCart.externalId} + '/requestfirmproposal'}" data-toggle="modal" data-target="#confirm-firmrequest" role="button">Request firm quote</a>
+                <a th:if="${shoppingCartItemList.size()<1}" class="btn shopping-cart-action-btn disabled" href="#" role="button">Request firm quote</a>
+
+                <a href="#" th:data-href="@{'/removeCart/' + ${shoppingCart.cpqId}}" data-toggle="modal" data-target="#confirm-delete" class="btn btn-danger shopping-cart-btn-danger">Delete</a>
+
+
+            </div>
+        </div>
+
+        <div th:replace="tables/myCartFragments.html :: tableHeader(tableDefinition=${tableDefinition})" ></div>
+
+    </div>
+</div>
+
+
+
+<div id="cart" class="container mt-2 mb-1">
+
+    <div th:if="${shoppingCartItemList.size()>0}" th:each="item : ${shoppingCartItemList}">
+        <div class="row cart-product">
+
+            <div th:replace="tables/myCartFragments.html :: tableBody(tableDefinition=${tableDefinition}, item=${item})" ></div>
+
+        </div>
+    </div>
+
+
+    <div th:if="${shoppingCartItemList.size()==0}">
+        <div class="row cart-product">
+            <div class="col text-center py-4">
+                <span>No products in shopping cart</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<div id="cart-footer" class="fluid">
+    <div class="container">
+        <div class="row pt-3">
+
+            <div th:replace="tables/myCartFragments.html :: tableTotal(tableDefinition=${tableDefinition}, shoppingCart=${shoppingCart})" ></div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="container flex-grow">
+</div>
+
+
+<div th:replace="common/footer :: footer"></div>
+
+<div th:replace="common/footer :: scripts"></div>
+
+<div th:replace="common/footer :: shoppingCartDropdownWidget"></div>
+
+
+<script th:inline="javascript">
+    /* <![CDATA[ */
+    $(document).ready(function () {
+
+        $(".shopping-cart-name-form").hide();
+
+        $("#edit-shopping-cart-name").click(function() {
+            $(".shopping-cart-name").hide();
+            $(".shopping-cart-name-form").show();
+        });
+
+        $("#shopping-cart-name-form-btn-cancel").click(function() {
+            $(".shopping-cart-name").show();
+            $(".shopping-cart-name-form").hide();
+        });
+
+
+        $('#shopping-cart-name-form-btn-save').click(function() {
+                $.ajax({
+                    type: "POST",
+                    data: { externalId: /*[[${shoppingCart.externalId}]]*/, newName : $('#shopping-cart-name-input').val()},
+                    url: "/changeCartName/",
+                    success: function (data, status) {
+                        window.location.reload();
+                    }
+                });
+        });
+
+
+
+        $(window).scroll(function() {
+            if ($(document).scrollTop() > 95) {
+                $('.cart-sticky-header').addClass('cart-sticky-header-shadow');
+            } else {
+                $('.cart-sticky-header').removeClass('cart-sticky-header-shadow');
+            }
+        });
+
+
+        if($(document).height()>$(window).height()){
+            $('#cart-footer').addClass('cart-sticky-footer');
+            $('#cart-footer').addClass('cart-sticky-footer-shadow');
+        }
+
+
+        $(window).scroll(function() {
+            if($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
+                $('#cart-footer').removeClass('cart-sticky-footer-shadow');
+            }
+            else{
+                if($(document).height()>$(window).height()) {
+                    $('#cart-footer').addClass('cart-sticky-footer');
+                    $('#cart-footer').addClass('cart-sticky-footer-shadow');
+                }
+            }
+        });
+
+
+    });
+    /* ]]> */
+</script>
+
+
+
+<script>
+    $('#confirm-delete').on('show.bs.modal', function(e) {
+        $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+    });
+
+    $('#confirm-firmrequest').on('show.bs.modal', function(e) {
+        $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+    });
+</script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    var message = /*[[${message}]]*/ 'default';
+    if (message) {
+        console.log("message was not empty, show dialog");
+        var header = /*[[${header}]]*/ 'Done';
+        displayMessage(header, message);
+    }
+    console.log(message);
+
+    /*]]>*/
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<nav th:fragment="common-navbar" class="navbar navbar-expand-lg py-3 navbar-light navbar-top">
+
+    <div class="container">
+        <a class="navbar-brand pr-2" href="/">
+            <img th:src="@{/images/header-logo.png}" th:href="@{/}" class="d-inline-block align-top"/>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault" style="z-index: 99;">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/shop">Shop</a>
+                </li>
+            </ul>
+
+            <div id="userControls">
+                <div class="row no-gutters">
+                    <div class="col d-flex col-to-right">
+                        <div th:if="${#authorization.expression('isAnonymous()')}">
+                            <a th:href="@{/login}">Sign in<i class="fas fa-user user-icon"></i></a>
+                        </div>
+                        <div class="dropdown" th:if="${#authorization.expression('isAuthenticated()')}">
+                            <a class="dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span th:text="${#authentication.getPrincipal().getName()+ ' ' + #authentication.getPrincipal().getSurname() }"></span> <i class="fas fa-user user-icon"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow" aria-labelledby="navbarDropdownMenuLink">
+                                <span class="dropdown-menu-arrow"></span>
+                                <a th:if="${!#authorization.expression('hasRole(''ROLE_ADMIN'')')}" class="dropdown-item" href="/myProfile"><i class="fas fa-user"></i>Profile</a>
+                                <a th:if="${!#authorization.expression('hasRole(''ROLE_ADMIN'')')}" class="dropdown-item" href="/myCartList"><i class="fa fa-shopping-cart"></i>Carts</a>
+                                <a th:if="${!#authorization.expression('hasRole(''ROLE_ADMIN'')')}" class="dropdown-item" href="/myFirmQuoteRequests"><i class="fas fa-dollar-sign"></i>Firm quote requests</a>
+                                <a sec:authorize="hasRole('ROLE_ADMIN')" class="dropdown-item" href="/admin"><i class="fas fa-cog"></i>Admin dashboard</a>
+                                <a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt"></i>Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row no-gutters">
+                    <div th:if="${#authorization.expression('isAuthenticated()') && !#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                        <div class="select-wrapper">
+                            <select name="cartSelect" id="cartSelect">
+                                <!--<option th:each="cart : ${#authentication.getPrincipal().getCarts()}" th:value="${cart.externalId}" th:text="${cart.customName}" th:selected="${cart.externalId==#authentication.getPrincipal().getActiveCartId()}" th:disabled="${cart.externalId==#authentication.getPrincipal().getActiveCartId()}"></option>
+                                -->
+                                <option th:each="cart : ${#authentication.getPrincipal().getCarts()}" th:value="${cart.externalId}" th:text="${cart.customName}" ></option>
+                                <option th:text="'Create new cart'" th:value="'newCart'"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div th:if="${#authorization.expression('isAuthenticated()') && !#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                        <span class="p1 fa-stack has-badge" th:data-count="${#authentication.getPrincipal().getActiveCart().getCnt()}">
+                            <a href="/myCart"><i class="p3 fa fa-shopping-cart fa-stack-1x pt-1 shopping-cart-icon"></i></a>
+                        </span>
+                    </div>
+                </div>
+
+
+        </div>
+
+
+
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<th:block th:fragment="tableHeader(tableDefinition)" >
+
+    <tr>
+        <th>Name</th>
+        <th>Id</th>
+        <th>Last modified</th>
+        <th>Line items</th>
+        <th th:each="field : ${tableDefinition.fields}" th:utext="#{${'firm_quote_request_headers.'+field}}"></th>
+        <th>Status</th>
+    </tr>
+
+</th:block>
+
+
+<th:block th:fragment="tableBody(tableDefinition, firmrequest)" >
+
+    <td th:text="${firmrequest.cartName}"></td>
+    <td th:text="${firmrequest.name}"></td>
+    <td th:text="${#dates.format(firmrequest.modifiedTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+    <td th:text="${firmrequest.itemCount}"></td>
+    <td th:each="field : ${tableDefinition.fields}" th:text="${tableDefinition.getValue(firmrequest, '__${field}__') }"></td>
+    <td>
+        <span th:if="${firmrequest.state=='10'}" th:text="${firmrequest.stateTitle}" class="badge badge-success"></span>
+        <span th:if="${firmrequest.state=='0'}" th:text="${firmrequest.stateTitle}" class="badge badge-warning"></span>
+    </td>
+
+</th:block>
+
+</body>
+</html>
