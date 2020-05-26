@@ -62,7 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/",
             "/configurator",
             "/configure",
-            "/configure/**",
+            "/configure-needs/**",
             "/templates",
             "/vis/**",
             "/shop",

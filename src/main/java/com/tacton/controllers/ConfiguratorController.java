@@ -218,7 +218,7 @@ public class ConfiguratorController {
         return "configuratorLeadgen";
     }
 
-    @RequestMapping(path = "/configure/{param}")
+    @RequestMapping(path = "/configure-needs/{param}")
     public String leadgenConfigure(@PathVariable String param, Model model) throws Exception {
 
         model.addAttribute("api_key", leadgen_api_key);

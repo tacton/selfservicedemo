@@ -93,7 +93,7 @@
 
 <script th:if="${needsValueList != null}">
     $("#leadGenConfig").click(function(event){
-        var url=this.href+"/"+$("#leadGenNeedParam").val();
+        var url="/configure-needs/"+$("#leadGenNeedParam").val();
         this.href=url;
     });
     $("#leadGenNeedParam").selectric();
