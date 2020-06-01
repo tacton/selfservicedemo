@@ -1004,7 +1004,11 @@ var $ = jQuery;
 
 					var containerHTMLElement = $("#visualization .content").get(0);
 					var visualizationObject = data.visualization;
-					tactonVis(containerHTMLElement, visualizationObject);
+					var visObject = tactonVis(containerHTMLElement, visualizationObject);
+					if(!LG.handleMessageSet) {
+						visObject.onMessage(LG.handleMessage);
+					}
+					LG.handleMessageSet = true;
 				}
 			}
 		},
@@ -1032,7 +1036,6 @@ var $ = jQuery;
 				fieldValue = " ";
 				notEmpty = false;
 			}
-			fieldValue = encodeURIComponent(fieldValue).replace(/\./g,"%2e");
 
 			var data = {
 				"fieldName": fieldName,
