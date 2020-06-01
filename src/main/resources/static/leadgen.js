@@ -15,6 +15,7 @@ var php_vars = {
         "summary_group_name": "${summary_group_name}",
         "bom_columns": "${leadgen_bom_columns}",
         "bom_extra_info": "${bom_extra_info}",
-        "bom_show_prices": "${leadgen_bom_show_prices}"
+        "bom_show_prices": "${leadgen_bom_show_prices}",
+		"needs_params": "{}"
     }
 };

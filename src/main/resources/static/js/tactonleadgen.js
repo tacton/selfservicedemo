@@ -318,7 +318,6 @@ var $ = jQuery;
                         if(result.length) {
                             imageName = result[0].image;
                         }
-                        let imagePath="";
                         if(LG.productsImagesFromOutside==0) {
                             imagePath = LG.resourcePath + "img/products/";
                         }
@@ -1011,7 +1010,11 @@ var $ = jQuery;
                 LG.post("visualization", {}, function (data) {
                     if (data && Object.keys(data).length > 0) {
                         var containerHTMLElement = $("#visualization .content").get(0);
-                        tactonVis(containerHTMLElement, data);
+                        var visObject = tactonVis(containerHTMLElement, data);
+                        if(!LG.handleMessageSet) {
+                            visObject.onMessage(LG.handleMessage);
+                        }
+                        LG.handleMessageSet = true;
                     }
                     plugin.hideSpinner();
                 });

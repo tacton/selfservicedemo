@@ -22,7 +22,7 @@
     <div class="flexrow">
         <div id="nav" class="col-nav">
             <div class="logo">
-                <a href="./">
+                <a href="/">
                     <img src="./images/header-logo.png" alt="Logo" class="logo-img">
                 </a>
             </div>
@@ -67,9 +67,11 @@
                 <div class="summary">
                     <div class="inner">
                         <div class="image-and-text">
-                            <img src=./img/summary-icon.png" alt="bomlist" class="bomlist-icon hidden">
+                            <img src="./img/summary-icon.png" alt="bomlist" class="bomlist-icon hidden">
                             <div class="price">
+								<span>
                                 <div class="total-price"></div>
+								</span>
                                 <a><span class="show-summary">Full summary</span></a>
                             </div>
                         </div>
@@ -264,10 +266,16 @@
 
 <script src="./leadgen.js"></script>
 <script src="./admin-assets/jquery/jquery.js"></script>
-<script src="./bootstrap.js/bootstrap.js"></script>
+<script src="./admin-assets/bootstrap/js/bootstrap.js"></script>
 <script src="./js/selectric.js"></script>
 <script src="./js/bootstrapslider.js"></script>
 <script src="./js/tactonleadgen.js"></script>
+<script>
+	var fileref=document.createElement('script');
+    fileref.setAttribute("type","text/javascript");
+    fileref.setAttribute("src", php_vars.config.cpq_instance + "/js/tacton.vis.js");
+	document.getElementsByTagName("body")[0].appendChild(fileref)
+</script>
 
 
 </body>
