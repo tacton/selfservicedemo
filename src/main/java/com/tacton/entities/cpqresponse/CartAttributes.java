@@ -35,6 +35,7 @@ public class CartAttributes extends CpqEntity {
     private String customName;
     private String referenceExternalUser;
     private String installationCountry;
+    private String totalNetPrice;
 
     public String getExternalId() {
         return externalId;
@@ -124,4 +125,11 @@ public class CartAttributes extends CpqEntity {
         this.cpqId = cpqId;
     }
 
+    public String getTotalNetPrice() {
+        return totalNetPrice;
+    }
+
+    public void setTotalNetPrice(String totalNetPrice) {
+        this.totalNetPrice = totalNetPrice;
+    }
 }
