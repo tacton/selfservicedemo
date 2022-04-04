@@ -32,7 +32,66 @@
         <div th:text="${item.productCatalogId}"></div>
         <div th:if="${item.isConfigurable}" class="d-inline-block">
             <a th:if="${item.isConfigurable}" th:href="@{'/reconfigure/' + ${item.id}}" class="btn cart-product-reconfigure-btn mt-1 mb-1">Reconfigure</a>
-            <a th:if="${item.isConfigurable}" href="#" class="btn cart-product-reconfigure-btn mt-1 mb-1 disabled">Details</a>
+            <div th:if="${item.cadSupport}">
+                <div th:if="${item.cadDocumentsStatus.equals('finished')}">
+                    <a href="#" th:id="'cad-documents-'+${item.id}" th:data-id="${item.id}" class="btn cart-product-cad-documents-btn mt-1 mb-1 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Download CAD documents</a>
+                    <div th:id="'cad-documents-dropdown-menu-'+${item.id}" class="dropdown-menu" th:aria-labelledby="'cad-documents-'+${item.id}">
+                        <a class="dropdown-item" th:href="@{'/cad/download/' + ${item.id}}">All</a>
+                        <div class="dropdown-divider"></div>
+                        <a th:each="doc: ${item.cadDocuments}"class="dropdown-item" th:href="@{${doc.file}}" target="_blank" th:text="${doc.name}"></a>
+                    </div>
+
+                </div>
+                <div th:if="${item.cadDocumentsStatus.equals('not generated')}">
+                    <a th:if="${item.cadDocumentsStatus.equals('not generated')}" th:id="'cad-documents-'+${item.id}" th:data-id="${item.id}" href="#" onclick="generateCad(this)" class="btn cart-product-cad-documents-btn mt-1 mb-1">Generate CAD documents</a>
+                </div>
+                <div th:if="${item.cadDocumentsStatus.equals('pending')}">
+                    <a th:if="${item.cadDocumentsStatus.equals('pending')}" th:id="'cad-documents-'+${item.id}" th:data-id="${item.id}" href="#" class="btn cart-product-cad-documents-btn mt-1 mb-1 disabled">Generate CAD documents <i class="spinner-border spinner-border-sm"></i></a>
+                    <script th:inline="javascript">
+                        /* <![CDATA[ */
+                        var itemId = /*[[${item.id}]]*/;
+                        var checkInterval = setInterval(function () {
+                            $.ajax({
+                                type: "GET",
+                                url: "/cad/status/" + itemId,
+                                success: function (data, status) {
+                                    if (data == "finished") {
+                                        clearInterval(checkInterval);
+                                        $("#cad-documents-" + itemId).html("Download CAD documents");
+                                        $("#cad-documents-" + itemId).removeClass("disabled");
+                                        $("#cad-documents-" + itemId).addClass("dropdown-toggle");
+                                        $("#cad-documents-" + itemId).removeAttr("onclick");
+                                        $("#cad-documents-" + itemId).attr("href", "#");
+                                        $("#cad-documents-" + itemId).attr("data-toggle", "dropdown");
+                                        $("#cad-documents-" + itemId).attr("aria-haspopup", "true");
+                                        $("#cad-documents-" + itemId).attr("aria-expanded", "false");
+
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "/cad/list/" + itemId,
+                                            success: function (data, status) {
+                                                $("#cad-documents-" + itemId).parent().append("<div id='cad-documents-dropdown-menu-"+itemId+"' class='dropdown-menu' aria-labelledby='dropdownMenuLink'>");
+                                                $("#cad-documents-dropdown-menu-"+itemId).append("<a class='dropdown-item' href='/cad/download/"+itemId+"'>All</a>")
+                                                $("#cad-documents-dropdown-menu-"+itemId).append("<div className='dropdown-divider'></div>")
+                                                data.forEach(element => {
+                                                    $("#cad-documents-dropdown-menu-"+itemId).append("<a class='dropdown-item' href='"+element.file+"' target='_blank'>"+element.name+"</a>")
+                                                });
+                                            },
+                                            error: function (data, status) {
+                                                displayMessage("Error", "Error during document generation.");
+                                            }
+                                        });
+                                    }
+                                },
+                                error: function (data, status) {
+                                    displayMessage("Error", "Error during document generation.");
+                                }
+                            });
+                        }, 10000);//time in milliseconds
+                        /* ]]> */
+                    </script>
+                </div>
+            </div>
         </div>
     </div>
     <div class="col col-quantity my-auto">

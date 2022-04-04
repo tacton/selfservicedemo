@@ -19,6 +19,7 @@
 package com.tacton.entities.cpqresponse;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Transient;
 
@@ -39,6 +40,15 @@ public class ShoppingCartItem extends CpqEntity {
 
     @Transient
     private String image;
+
+    @JsonIgnore
+    private boolean cadSupport;
+
+    @JsonIgnore
+    private String cadDocumentsStatus;
+
+    @JsonIgnore
+    private CadDocument[] cadDocuments;
 
 
     public String getId() {
@@ -132,6 +142,30 @@ public class ShoppingCartItem extends CpqEntity {
 
     public void setProductCatalogId(String productCatalogId) {
         this.productCatalogId = productCatalogId;
+    }
+
+    public boolean getCadSupport() {
+        return cadSupport;
+    }
+
+    public void setCadSupport(boolean cadSupport) {
+        this.cadSupport = cadSupport;
+    }
+
+    public String getCadDocumentsStatus() {
+        return cadDocumentsStatus;
+    }
+
+    public void setCadDocumentsStatus(String cadDocumentsStatus) {
+        this.cadDocumentsStatus = cadDocumentsStatus;
+    }
+
+    public CadDocument[] getCadDocuments() {
+        return cadDocuments;
+    }
+
+    public void setCadDocuments(CadDocument[] cadDocuments) {
+        this.cadDocuments = cadDocuments;
     }
 
     @Override

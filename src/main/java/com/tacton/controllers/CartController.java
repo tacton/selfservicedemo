@@ -18,6 +18,8 @@
 
 package com.tacton.controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tacton.entities.User;
 import com.tacton.entities.cpqresponse.*;
 import com.tacton.services.cpq.*;
@@ -29,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -291,7 +294,6 @@ public class CartController {
         for(ShoppingCartItem item : shoppingCartItemList.getItems()){
             if(item.getCatalogImage()!=null && !item.getCatalogImage().isEmpty()) {
                 //Call to get image file
-
                 HttpHeaders headers = new HttpHeaders();
                 String plainCreds = cpq_user + ":" + cpq_pass;
                 byte[] plainCredsBytes = plainCreds.getBytes();
@@ -313,6 +315,44 @@ public class CartController {
                 //encoding and setting image as a member variable of product
                 item.setImage(Base64.encodeBase64String(buffer));
             }
+
+            //call to find if DA/CAD supported
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("X-key", customer_self_service_api_key);
+            HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+            String url = customer_self_service_api_url + "/cart/items/" + item.getId() + "/cad/cad-automation-status";
+            HttpEntity<String> request = new HttpEntity<String>(headers);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+            JsonNode parent= new ObjectMapper().readTree(response.getBody());
+            String cadSupport = parent.path("status").asText();
+
+            if (cadSupport.equals("pending") || cadSupport.equals("not generated")) {
+                item.setCadSupport(true);
+            } else if (cadSupport.equals("finished")) {
+                item.setCadSupport(true);
+
+                //call to get list of files
+                String urlListFiles = customer_self_service_api_url + "/cart/items/" + item.getId() + "/cad/get-generated-cad-document-list";
+                HttpEntity<String> requestListfiles = new HttpEntity<String>(headers);
+                ResponseEntity<String> responseListFiles = restTemplate.exchange(urlListFiles, HttpMethod.GET, requestListfiles, String.class);
+                JsonNode parentNode = new ObjectMapper().readTree(responseListFiles.getBody());
+                String files = String.valueOf(parentNode.path("files"));
+                final ObjectMapper objectMapper = new ObjectMapper();
+                CadDocument[] documents = objectMapper.readValue(files, CadDocument[].class);
+
+                for (CadDocument cadDocument : documents) {
+                    String fileUrl = cadDocument.getFile();
+                    String fileName = fileUrl.substring( fileUrl.lastIndexOf('/')+1, fileUrl.length() );
+                    String fileNameWithoutExtn = fileName.substring(0, fileName.lastIndexOf('.'));
+                    fileNameWithoutExtn = fileNameWithoutExtn.replaceAll("%20", " ");
+                    cadDocument.setName(fileNameWithoutExtn);
+                }
+                item.setCadDocuments(documents);
+            } else {
+                item.setCadSupport(false);
+            }
+            item.setCadDocumentsStatus(cadSupport);
         }
         Map<String, String> currencyMap = new HashMap<>();
 
@@ -555,6 +595,143 @@ public class CartController {
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         return "ok";
+    }
+
+    @ResponseBody
+    @RequestMapping("/cad/generate/{shoppingCartItemId}")
+    public ResponseEntity<String> generateCadDocuments(@PathVariable String shoppingCartItemId) throws Exception {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        RestTemplate restTemplate = new RestTemplate();
+        ShoppingCartItemList shoppingCartItemList = restTemplate.getForObject(customer_self_service_api_url + "/cart/items?_externalId=" + user.getActiveCartId() + "&_key=" + customer_self_service_api_key, ShoppingCartItemList.class);
+
+        ShoppingCartItem shoppingCartItem = shoppingCartItemList.getItems().stream()
+                .filter(item -> shoppingCartItemId.equals(item.getId()))
+                .findAny()
+                .orElse(null);
+
+        if(shoppingCartItem !=null) {
+            RestTemplate restTemplate2 = new RestTemplate();
+            String url = customer_self_service_api_url + "/cart/items/" + shoppingCartItem.getId() + "/cad/start-cad-automation";
+            HttpHeaders requestHeaders = new HttpHeaders();
+            requestHeaders.add("X-Key", customer_self_service_api_key);
+            HttpEntity<String> request = new HttpEntity<String>(requestHeaders);
+            ResponseEntity<String> response = restTemplate2.exchange(url, HttpMethod.POST, request, String.class);
+            return ResponseEntity.ok()
+                    .body("ok");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @RequestMapping("/cad/download/{shoppingCartItemId}")
+    public ResponseEntity<Resource> downloadCadDocuments(@PathVariable String shoppingCartItemId) throws Exception {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        RestTemplate restTemplate = new RestTemplate();
+        ShoppingCartItemList shoppingCartItemList = restTemplate.getForObject(customer_self_service_api_url + "/cart/items?_externalId=" + user.getActiveCartId() + "&_key=" + customer_self_service_api_key, ShoppingCartItemList.class);
+
+        ShoppingCartItem shoppingCartItem = shoppingCartItemList.getItems().stream()
+                .filter(item -> shoppingCartItemId.equals(item.getId()))
+                .findAny()
+                .orElse(null);
+
+        if(shoppingCartItem !=null) {
+            RestTemplate restTemplate2 = new RestTemplate();
+            String url = customer_self_service_api_url + "/cart/items/" + shoppingCartItem.getId() + "/cad/download-all-generated-cad-documents";
+            HttpHeaders requestHeaders = new HttpHeaders();
+            requestHeaders.add("X-Key", customer_self_service_api_key);
+            HttpEntity<String> request = new HttpEntity<String>(requestHeaders);
+            ResponseEntity<Resource> response = restTemplate2.exchange(url, HttpMethod.GET, request, Resource.class);
+
+            //Saving file from response
+            InputStream stream = response.getBody().getInputStream();
+            byte[] buffer = stream.readAllBytes();
+            stream.close();
+            ByteArrayResource resource = new ByteArrayResource(buffer);
+
+            HttpHeaders header = new HttpHeaders();
+            header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + shoppingCartItem.getProductCatalogId() + " CAD Documents.zip");
+            header.add("Cache-Control", "no-cache, no-store, must-revalidate");
+            header.add("Pragma", "no-cache");
+            header.add("Expires", "0");
+
+            return ResponseEntity.ok()
+                    .headers(header)
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(resource);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/cad/status/{shoppingCartItemId}", method = RequestMethod.GET)
+    public ResponseEntity<String> checkCadDocumentsStatus(@PathVariable String shoppingCartItemId) throws Exception {
+
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        RestTemplate restTemplate = new RestTemplate();
+        ShoppingCartItemList shoppingCartItemList = restTemplate.getForObject(customer_self_service_api_url + "/cart/items?_externalId=" + user.getActiveCartId() + "&_key=" + customer_self_service_api_key, ShoppingCartItemList.class);
+
+        ShoppingCartItem shoppingCartItem = shoppingCartItemList.getItems().stream()
+                .filter(item -> shoppingCartItemId.equals(item.getId()))
+                .findAny()
+                .orElse(null);
+
+        if(shoppingCartItem !=null) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("X-key", customer_self_service_api_key);
+            HttpEntity<String> entity = new HttpEntity<String>(headers);
+            String url = customer_self_service_api_url + "/cart/items/" + shoppingCartItem.getId() + "/cad/cad-automation-status";
+            HttpEntity<String> request = new HttpEntity<String>(headers);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+            JsonNode parent = new ObjectMapper().readTree(response.getBody());
+            String status = parent.path("status").asText();
+            return ResponseEntity.ok().body(status);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/cad/list/{shoppingCartItemId}", method = RequestMethod.GET)
+    public ResponseEntity<CadDocument[]> getCadDocumentList(@PathVariable String shoppingCartItemId) throws Exception {
+
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        RestTemplate restTemplate = new RestTemplate();
+        ShoppingCartItemList shoppingCartItemList = restTemplate.getForObject(customer_self_service_api_url + "/cart/items?_externalId=" + user.getActiveCartId() + "&_key=" + customer_self_service_api_key, ShoppingCartItemList.class);
+
+        ShoppingCartItem shoppingCartItem = shoppingCartItemList.getItems().stream()
+                .filter(item -> shoppingCartItemId.equals(item.getId()))
+                .findAny()
+                .orElse(null);
+
+        if(shoppingCartItem !=null) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("X-key", customer_self_service_api_key);
+            HttpEntity<String> entity = new HttpEntity<String>(headers);
+            String url = customer_self_service_api_url + "/cart/items/" + shoppingCartItem.getId() + "/cad/get-generated-cad-document-list";
+            HttpEntity<String> request = new HttpEntity<String>(headers);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+            JsonNode parent = new ObjectMapper().readTree(response.getBody());
+            String files = String.valueOf(parent.path("files"));
+            final ObjectMapper objectMapper = new ObjectMapper();
+            CadDocument[] documents = objectMapper.readValue(files, CadDocument[].class);
+
+            for (CadDocument cadDocument : documents) {
+                String fileUrl = cadDocument.getFile();
+                String fileName = fileUrl.substring( fileUrl.lastIndexOf('/')+1, fileUrl.length() );
+                String fileNameWithoutExtn = fileName.substring(0, fileName.lastIndexOf('.'));
+                fileNameWithoutExtn = fileNameWithoutExtn.replaceAll("%20", " ");
+                cadDocument.setName(fileNameWithoutExtn);
+            }
+
+            return ResponseEntity.ok().body(documents);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 

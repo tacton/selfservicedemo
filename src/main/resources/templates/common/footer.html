@@ -36,10 +36,73 @@
 
 
 <div th:fragment="scripts">
+    <script th:src="@{/js/popper.min.js}"></script>
     <script th:src="@{/webjars/jquery/3.4.1/jquery.js}"></script>
     <script th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.js}"></script>
     <script th:src="@{/js/bootstrap-table.min.js}"></script>
     <script th:src="@{/js/selectric.js}"></script>
+
+    <script th:inline="javascript">
+        /* <![CDATA[ */
+
+            function generateCad(object) {
+                $.ajax({
+                    type: "GET",
+                    url: "/cad/generate/" + $(object).data('id'),
+                    success: function (data, status) {
+                        if (data == "ok") {
+                            $(object).html("Generate CAD documents <i class='spinner-border spinner-border-sm'></i>");
+                            $(object).addClass("disabled");
+                            var checkInterval = setInterval(function () {
+                                $.ajax({
+                                    type: "GET",
+                                    url: "/cad/status/" + $(object).data('id'),
+                                    success: function (data, status) {
+                                        if (data == "finished") {
+                                            clearInterval(checkInterval);
+                                            $(object).html("Download CAD documents");
+                                            $(object).removeClass("disabled");
+                                            $(object).addClass("dropdown-toggle");
+                                            $(object).removeAttr("onclick");
+                                            $(object).attr("href", "#");
+                                            $(object).attr("data-toggle", "dropdown");
+                                            $(object).attr("aria-haspopup", "true");
+                                            $(object).attr("aria-expanded", "false");
+
+                                            $.ajax({
+                                                type: "GET",
+                                                url: "/cad/list/" + $(object).data('id'),
+                                                success: function (data, status) {
+                                                    $(object).parent().append("<div id='cad-documents-dropdown-menu-"+$(object).data('id')+"' class='dropdown-menu' aria-labelledby='dropdownMenuLink'>");
+                                                    $("#cad-documents-dropdown-menu-"+$(object).data('id')).append("<a class='dropdown-item' href='/cad/download/"+$(object).data('id')+"'>All</a>")
+                                                    $("#cad-documents-dropdown-menu-"+$(object).data('id')).append("<div className='dropdown-divider'></div>")
+                                                    data.forEach(element => {
+                                                        $("#cad-documents-dropdown-menu-"+$(object).data('id')).append("<a class='dropdown-item' href='"+element.file+"' target='_blank'>"+element.name+"</a>")
+                                                    });
+                                                },
+                                                error: function (data, status) {
+                                                    displayMessage("Error", "Error during document generation.");
+                                                }
+                                            });
+
+
+                                        }
+                                    },
+                                    error: function (data, status) {
+                                        displayMessage("Error", "Error during document generation.");
+                                    }
+                                });
+                            }, 10000);//time in milliseconds
+                        }
+                    },
+                    error: function (data, status) {
+                        displayMessage("Error", "Error during document generation.");
+                    }
+                });
+            }
+
+        /* ]]> */
+    </script>
 </div>
 
 
