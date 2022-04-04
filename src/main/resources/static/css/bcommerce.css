@@ -1258,7 +1258,7 @@ label {
     bottom: 0px;
 }
 
-.cart-product-reconfigure-btn {
+.cart-product-reconfigure-btn, .cart-product-cad-documents-btn {
     color: #fff;
     background-color: #1a75bb;
     border-color: #1a75bb;
@@ -1268,9 +1268,9 @@ label {
     padding-top:6px!important;
     padding-bottom:6px!important;
 }
-.cart-product-reconfigure-btn:hover{color:#fff;background-color:#165f97;border-color:#165f97}
+.cart-product-reconfigure-btn:hover, .cart-product-cad-documents-btn:hover{color:#fff;background-color:#165f97;border-color:#165f97}
 .cart-product-reconfigure-btn.focus,
-.cart-product-reconfigure-btn:focus{box-shadow:0 0 0 .2rem rgba(38,143,255,.5)}
+.cart-product-reconfigure-btn:focus, .cart-product-cad-documents-btn.focus, .cart-product-cad-documents-btn:focus{box-shadow:0 0 0 .2rem rgba(38,143,255,.5)}
 
 
 
