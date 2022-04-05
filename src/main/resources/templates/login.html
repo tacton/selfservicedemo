@@ -34,6 +34,8 @@
 
                     <form th:action="@{/login}" method="post">
 
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
                         <div class="form-row mt-1">
                             <div class="form-group col">
                                 <label for="username" class="form-label">Username</label>
