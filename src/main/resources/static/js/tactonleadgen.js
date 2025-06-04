@@ -1189,7 +1189,7 @@ var $ = jQuery;
 
         //HANDLE MESSAGE SENT FROM VISUALIZATION
         handleMessage: function(message){
-            if(message.data != null){
+            if(message != null && message.data != null){
                 if(message.data.action == "multicommit"){
                     var parameters = message.data.parameters;
                     if(parameters instanceof Object){

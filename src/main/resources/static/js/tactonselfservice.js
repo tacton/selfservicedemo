@@ -175,6 +175,76 @@ var $ = jQuery;
 
 
 			//TEXTFIELD
+            } else if (p.properties.guitype === "text" && p.properties.tc_gui_type === "custom_viz_image") {
+				// get selected custom images
+				url = LG.configUrl +  "/custom-images/" + LG.configId + "/get-selected-custom-images";
+				LG.ajax("GET", url, null, (data) => {
+					let selectedCustomImage = "";
+					for (const selection of data.selections) { 
+						if (selection.id === p.name) {
+							selectedCustomImage = selection.value;
+						}
+					}
+					// get list of all custom images
+					let url = LG.configUrl +  "/custom-images/" + LG.configId + "/" + p.name + "/get-custom-image-file-list";
+					LG.ajax("GET", url, {_key: LG.publicKey }, (data) => {
+						let files = data.files;
+						files.unshift({key:"", url:"", thumbnailUrl:"img/no-pic.png"});
+						for (const file of files) { 
+							// add image tag, evtl. mark selected
+							let image = $(`<img class="customimageicon" src="${file.thumbnailUrl}"/>`);
+							if (file.key === selectedCustomImage) {
+								image.addClass("selectedcustomimage");
+							}
+							// when clicked, select custom image via api
+							image.on("click", () => {
+								let url = LG.configUrl +  "/custom-images/" + LG.configId + "/" + p.name + "?file=" + file.key;
+								LG.ajax("PUT", url, file, (data) => {
+									LG.refresh();
+								});
+							});
+							widget.append(image);
+							// add trash can overlay to delete custom image
+							if (file.key !== "") {
+								let icon = $(`<img class="customimagetrashcan" src="img/trash_can.png"/>`);
+								widget.append(icon);
+								icon.on("click", () => {
+									if (confirm("Delete custom image?") == true) {
+										let url = LG.configUrl +  "/custom-images/" + LG.configId + "/" + p.name + "?file=" + file.key;
+										LG.ajax("DELETE", url, file, (data) => {
+											LG.refresh();
+										});
+									}
+								});
+							}
+						}
+					});
+				});
+				// drop zone for custom image upload
+				let obj = $(`<div class="customimagedrophandler">Drag & Drop Files Here</div>`);
+				widget.append(obj);
+				obj.on('dragenter', (e) => {
+					e.stopPropagation();
+					e.preventDefault();
+				});
+				obj.on('dragleave', (e) => {
+					e.stopPropagation();
+					e.preventDefault();
+				});
+				obj.on('dragover', (e) => {
+					e.stopPropagation();
+					e.preventDefault();
+				});
+				obj.on('drop', (e) => {
+					e.preventDefault();
+					let file = e.originalEvent.dataTransfer.files[0];
+					let url = LG.configUrl +  "/custom-images/" + LG.configId + "/" + p.name + "?file=" + file.name;
+					LG.showSpinner();
+					LG.ajax("POST", url, file, (data) => {
+						LG.refresh();
+						LG.hideSpinner();
+					});
+				});
 			} else if (p.properties.guitype === "text" && p.properties.tc_guitype != "slider") {
 			
 				var max = p.domain.max == undefined ? "na" : p.domain.max;
@@ -446,8 +516,6 @@ var $ = jQuery;
 		},
 		
 		handleResponse: function(data) {
-
-			console.log("handleResponse", data)
 
 			var response = data.response;
 			var doClear = !$('.modal.conflict').is(':visible') || response.status != "OK";
@@ -1013,6 +1081,37 @@ var $ = jQuery;
 			}
 		},
 		
+		refresh: function() {
+			var currentStep = "";
+			if(LG.configData != null) {
+				LG.configData.steps.forEach(function(step, index) {
+					if(step.current) {
+						currentStep = step.name;
+					}
+				});
+			}
+			LG.stepChange(currentStep);
+		},
+		
+		ajax: function(type, url, sendData, callback) {
+			$.ajax({
+				type: type,
+				url: url,
+				headers: { "X-Key": LG.publicKey },
+				data: sendData,
+				cache:       false,
+				processData: false,
+				contentType: false,
+				crossDomain: true,
+				xhrFields:   { withCredentials: false },
+				success: (data) => {
+					if (callback) {
+						callback(data);
+					}
+				}
+			});
+		},
+		
 		stepChange: function (name) {
 			var currentStep = "";
 			if(LG.configData != null) {
@@ -1215,7 +1314,7 @@ var $ = jQuery;
 			console.log("event from visualization/browser", message);
 			console.log("event data", message.data);
 
-			if(message.data != null){
+			if(message != null && message.data != null){
 				if(message.data.action == "multicommit"){
 					var parameters = message.data.parameters;
 					if(parameters instanceof Object){
