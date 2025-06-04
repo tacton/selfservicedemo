@@ -11709,6 +11709,32 @@ footer.standard .logo {
   height: 120px;
   position: relative;
 }
+.customimagedrophandler {
+	float: left;
+	border:2px dotted #0B85A1;
+	width:128px;
+	height:128px;
+	color:#92AAB0;
+	text-align:center;
+	vertical-align:center;
+	padding:1px 1px 1px 1px;
+	margin-bottom:10px;
+	font-size:18px;
+	position: relative;
+}
+.customimageicon {
+	width:128px;
+	height:128px;
+	padding: 5px 5px;
+	border:1px solid #3BA5D1;
+}
+.selectedcustomimage {
+	border:2px solid #0B85A1;
+}
+.customimagetrashcan {
+	position: relative;
+	left: -32px;
+}
 @media (min-width: 768px) {
   #start .products.multi .info-container {
     height: 155px;
